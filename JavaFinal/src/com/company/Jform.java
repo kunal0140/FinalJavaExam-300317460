@@ -27,7 +27,7 @@ public class Jform extends JFrame {
 
     private void Add(MouseEvent e) throws ClassNotFoundException, SQLException {
         PreparedStatement query;
-        Class. forName("com.mysql.jdbc.Driver");
+        Class.forName("com.mysql.jdbc.Driver");
 
         Connection con1  = DriverManager.getConnection("jdbc:mysql://localhost/loan","root","");
 
@@ -56,7 +56,7 @@ public class Jform extends JFrame {
     public void display() throws ClassNotFoundException, SQLException {
 
         PreparedStatement query;
-        Class. forName("com.mysql.jdbc.Driver");
+        Class.forName("com.mysql.jdbc.Driver");
         model = new DefaultTableModel();
         model.addColumn("clientno");
         model.addColumn("clientname ");
@@ -88,7 +88,7 @@ public class Jform extends JFrame {
 
     private void edit(MouseEvent e) throws ClassNotFoundException, SQLException {
         PreparedStatement query;
-        Class. forName("com.mysql.jdbc.Driver");
+        Class.forName("com.mysql.jdbc.Driver");
 
         Connection con1  = DriverManager.getConnection("jdbc:mysql://localhost/loan","root","");
 
@@ -117,7 +117,7 @@ public class Jform extends JFrame {
 
     private void delete(MouseEvent e) throws ClassNotFoundException, SQLException {
         PreparedStatement query;
-        Class. forName("com.mysql.jdbc.Driver");
+        Class.forName("com.mysql.jdbc.Driver");
 
         Connection con1  = DriverManager.getConnection("jdbc:mysql://localhost/loan","root","");
 
