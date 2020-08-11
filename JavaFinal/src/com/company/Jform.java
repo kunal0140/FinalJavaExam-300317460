@@ -22,7 +22,7 @@ public class Jform extends JFrame {
     static DefaultTableModel model ;
     public Jform() {
         initComponents();
-//        comboBox1 = new JComboBox<String>(new String[]{"Business", "Personal"});
+
     }
 
     private void Add(MouseEvent e) throws ClassNotFoundException, SQLException {
@@ -78,7 +78,9 @@ public class Jform extends JFrame {
         rs =query.executeQuery();
         while(rs.next()){
             model.addRow(new Object[]{rs.getString("clientno"),rs.getString("clientname"),rs.getString("loanamount"),
-                    rs.getString("years"),rs.getString(comboBox1.getSelectedIndex())});
+                    rs.getString("years"),rs.getString(String.valueOf(comboBox1.getSelectedItem()))});
+
+
 
         }
         table1.setModel(model);
@@ -99,7 +101,7 @@ public class Jform extends JFrame {
         clientname  = textField2.getText();
         loanamount = Double.valueOf(textField3.getText());
         years = Integer.parseInt(textField4.getText());
-        loantype = String.valueOf(comboBox1.getSelectedObjects());
+        loantype = String.valueOf(String.valueOf(comboBox1.getSelectedItem()));
 
         query = con1.prepareStatement("update loantable set clientname = ?, " +
                 "loanamount = ?, years = ?, loantype = ? where clientno = ?");
