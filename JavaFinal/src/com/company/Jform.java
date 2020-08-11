@@ -4,10 +4,12 @@
 
 package com.company;
 
+import java.awt.*;
 import java.awt.event.*;
 import java.sql.*;
 import java.util.Scanner;
 import javax.swing.*;
+import javax.swing.event.*;
 import javax.swing.table.DefaultTableModel;
 
 import net.miginfocom.swing.*;
@@ -19,48 +21,121 @@ public class Jform extends JFrame {
     static String OldName;
     static DefaultTableModel model ;
     public Jform() {
-        comboBox1 = new JComboBox<String>(new String[]{"Business", "Personal"});
         initComponents();
+//        comboBox1 = new JComboBox<String>(new String[]{"Business", "Personal"});
     }
 
-    private void Add(MouseEvent e) {
+    private void Add(MouseEvent e) throws ClassNotFoundException, SQLException {
+        PreparedStatement query;
+        Class. forName("com.mysql.jdbc.Driver");
 
+        Connection con1  = DriverManager.getConnection("jdbc:mysql://localhost/loan","root","");
+
+        String clientno,clientname;
+        Double loanamount;
+        int years;
+        String loantype;
+
+        clientno = textField1.getText();
+        clientname  = textField2.getText();
+        loanamount = Double.valueOf(textField3.getText());
+        years = Integer.parseInt(textField4.getText());
+        loantype = String.valueOf(comboBox1.getSelectedItem());
+
+        query = con1.prepareStatement("insert into loantable values(?,?,?,?,?)");
+        query.setString(1,clientno);
+        query.setString(2,clientname);
+        query.setDouble(3,Double.valueOf(loanamount));
+        query.setString(4, String.valueOf(years));
+        query.setString(5, loantype);
+        query.executeUpdate();
+        model.setRowCount(0);
+        display();
     }
+
     public void display() throws ClassNotFoundException, SQLException {
 
         PreparedStatement query;
         Class. forName("com.mysql.jdbc.Driver");
         model = new DefaultTableModel();
-        model.addColumn("Name");
-        model.addColumn("Grade ");
-        model.addColumn("Department");
+        model.addColumn("clientno");
+        model.addColumn("clientname ");
+        model.addColumn("loanamount");
+        model.addColumn("years");
+        model.addColumn("loantype");
 
 
-        Connection con1  = DriverManager.getConnection("jdbc:mysql://localhost/student","root","");
+
+
+        Connection con1  = DriverManager.getConnection("jdbc:mysql://localhost/loan","root","");
 
         Scanner ab = new Scanner(System.in);
-        String Name,Grade,Department;
-        query  = con1.prepareStatement("Select * from studentinfo");
+        String clientno,clientname;
+        Double loanamount;
+        int years;
+        query  = con1.prepareStatement("Select * from loantable");
         ResultSet rs ;
         rs =query.executeQuery();
         while(rs.next()){
-            model.addRow(new Object[]{rs.getString("Name"),rs.getString("Grade"),rs.getString("Department")});
+            model.addRow(new Object[]{rs.getString("clientno"),rs.getString("clientname"),rs.getString("loanamount"),
+                    rs.getString("years"),rs.getString(comboBox1.getSelectedIndex())});
 
         }
         table1.setModel(model);
     }
 
-    private void edit(MouseEvent e) {
-        // TODO add your code here
+    private void edit(MouseEvent e) throws ClassNotFoundException, SQLException {
+        PreparedStatement query;
+        Class. forName("com.mysql.jdbc.Driver");
+
+        Connection con1  = DriverManager.getConnection("jdbc:mysql://localhost/loan","root","");
+
+        String clientno,clientname;
+        Double loanamount;
+        int years;
+        String loantype ;
+
+        clientno = textField1.getText();
+        clientname  = textField2.getText();
+        loanamount = Double.valueOf(textField3.getText());
+        years = Integer.parseInt(textField4.getText());
+        loantype = String.valueOf(comboBox1.getSelectedObjects());
+
+        query = con1.prepareStatement("update loantable set clientname = ?, " +
+                "loanamount = ?, years = ?, loantype = ? where clientno = ?");
+        query.setString(1, clientname);
+        query.setDouble(2, Double.valueOf(loanamount));
+        query.setString(3, String.valueOf(years));
+        query.setString(4, loantype);
+        query.setString(5, clientno);
+        query.executeUpdate();
+        model.setRowCount(0);
+        display();
     }
 
-    private void delete(MouseEvent e) {
-        // TODO add your code here
+    private void delete(MouseEvent e) throws ClassNotFoundException, SQLException {
+        PreparedStatement query;
+        Class. forName("com.mysql.jdbc.Driver");
+
+        Connection con1  = DriverManager.getConnection("jdbc:mysql://localhost/loan","root","");
+
+        String clientno, clientname;
+        Double loanamount;
+        int years;
+        String loantype ;
+
+        clientno = textField1.getText();
+
+        query = con1.prepareStatement("delete from loantable where clientno = ?");
+        query.setString(1, clientno);
+        query.executeUpdate();
+        model.setRowCount(0);
+        display();
     }
 
     private void initComponents() {
         // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents
-        // Generated using JFormDesigner Evaluation license - Kunal Sharma
+        // Generated using JFormDesigner Evaluation license - Manmohan Singh
         label1 = new JLabel();
         textField1 = new JTextField();
         label2 = new JLabel();
@@ -70,7 +145,7 @@ public class Jform extends JFrame {
         label4 = new JLabel();
         textField4 = new JTextField();
         label5 = new JLabel();
-        comboBox1 = new JComboBox();
+        comboBox1 = new JComboBox(new String[] {"Business", "Personal"});
         scrollPane1 = new JScrollPane();
         table1 = new JTable();
         scrollPane2 = new JScrollPane();
@@ -156,7 +231,13 @@ public class Jform extends JFrame {
         button1.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                Add(e);
+                try {
+                    Add(e);
+                } catch (ClassNotFoundException classNotFoundException) {
+                    classNotFoundException.printStackTrace();
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
             }
         });
         contentPane.add(button1, "cell 0 7 4 1");
@@ -166,7 +247,13 @@ public class Jform extends JFrame {
         button2.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                edit(e);
+                try {
+                    edit(e);
+                } catch (ClassNotFoundException classNotFoundException) {
+                    classNotFoundException.printStackTrace();
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
             }
         });
         contentPane.add(button2, "cell 4 7");
@@ -176,7 +263,13 @@ public class Jform extends JFrame {
         button3.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                delete(e);
+                try {
+                    delete(e);
+                } catch (ClassNotFoundException classNotFoundException) {
+                    classNotFoundException.printStackTrace();
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
             }
         });
         contentPane.add(button3, "cell 6 7");
@@ -191,7 +284,7 @@ public class Jform extends JFrame {
     }
 
     // JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables
-    // Generated using JFormDesigner Evaluation license - Kunal Sharma
+    // Generated using JFormDesigner Evaluation license - Manmohan Singh
     private JLabel label1;
     private JTextField textField1;
     private JLabel label2;
